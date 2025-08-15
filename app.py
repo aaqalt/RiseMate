@@ -10,6 +10,7 @@ from aiogram.enums import ParseMode
 from dotenv import load_dotenv  # type: ignore
 
 from handlers import *
+from utils.database import init_db
 from utils.morning import start_morning_scheduler
 from utils.newtasks import start_scheduler
 
@@ -27,5 +28,6 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    init_db()
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
