@@ -5,4 +5,4 @@ from .setlocation import set_location_router
 from .addtodo import addtodo_router
 from .mytodos import mytodos_router
 from .default import default_router
-from .current_weather import current_weather
+from .current_weather import current_weather_router
