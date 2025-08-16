@@ -3,6 +3,7 @@ from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from utils.database import User, session
+from utils.get_weather import get_weather
 
 set_location_router = Router()
 
@@ -36,7 +37,8 @@ async def process_location_geo(message: Message, state: FSMContext):
     lat = message.location.latitude
     lon = message.location.longitude
     chat_id = message.from_user.id
-    User.update(session, chat_id, latitude=lat, longitude=lon)
+    loc,text = get_weather(lat,lon)
+    User.update(session, chat_id, latitude=lat, longitude=lon,location=text)
 
     await message.answer(f"✅ Your location has been set to: {lat}, {lon}", reply_markup=ReplyKeyboardRemove())
     await state.clear()
