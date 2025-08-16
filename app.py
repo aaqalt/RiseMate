@@ -21,7 +21,7 @@ dp = Dispatcher()
 
 async def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    dp.include_routers(start_router,help_router,settime_router,set_location_router,addtodo_router,mytodos_router,default_router)
+    dp.include_routers(start_router,help_router,settime_router,set_location_router,addtodo_router,mytodos_router,default_router,current_weather)
     start_scheduler(bot.send_message)
     start_morning_scheduler(bot)
     await dp.start_polling(bot)

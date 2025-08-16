@@ -15,5 +15,6 @@ Here’s what I can do for you:
 📍 /setlocation – <i>Set your city for weather updates</i>
 📝 /addtodo - – <i>Add a new task to your to-do list</i>
 📋 /mytodos – <i>View your current tasks</i>
+   /current_weather - Current weather in your city
 
 💡 <b>Tip: Set your time and location first so I can prepare your perfect morning update.</b>""")

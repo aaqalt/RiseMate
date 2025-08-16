@@ -1,6 +1,6 @@
 import aiohttp
 
-async def get_weather(city="Tashkent"):
+async def get_weather(city):
     API_KEY = "a182e9ac096d5062c743b13932eb63a6"
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={API_KEY}"
 
