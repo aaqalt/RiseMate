@@ -1,12 +1,20 @@
 import aiohttp 
 
-import os
+API_KEY = "a182e9ac096d5062c743b13932eb63a6"
 
-API_KEY = os.getenv("a182e9ac096d5062c743b13932eb63a6")
+WEATHER_EMOJIS = {
+    "Clear": "☀️ Sunny",
+    "Clouds": "☁️ Cloudy",
+    "Rain": "🌧 Rainy",
+    "Drizzle": "🌦 Drizzle",
+    "Thunderstorm": "⛈ Thunderstorm",
+    "Snow": "❄️ Snowy",
+    "Mist": "🌫 Misty",
+    "Fog": "🌫 Foggy"
+}
 
 async def get_weather(lat: float, lon: float):
     async with aiohttp.ClientSession() as session:
-        # Get weather by lat/lon
         url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}"
         async with session.get(url) as resp:
             data = await resp.json()
@@ -15,9 +23,9 @@ async def get_weather(lat: float, lon: float):
 
         temp = data["main"]["temp"]
         feels_like = data["main"]["feels_like"]
-        description = data["weather"][0]["description"].capitalize()
+        main_weather = data["weather"][0]["main"]  # e.g., "Clear", "Clouds"
+        description = WEATHER_EMOJIS.get(main_weather, main_weather)  # fallback to text
 
-        # Get location name (city)
         city = data.get("name", "")
         country = data.get("sys", {}).get("country", "")
         location_name = f"{city}, {country}" if city and country else city or "Unknown location"
