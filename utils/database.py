@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Integer, String, Time, create_engine, func
+from sqlalchemy import BigInteger, Column, DateTime, Float, ForeignKey, Integer, String, Time, create_engine, func
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from sqlalchemy.orm import relationship
@@ -27,6 +27,8 @@ class User(Base):
     fullname = Column(String(50), nullable=False)
     location = Column(String,default="Tashkent")
     pr_time = Column(Time, default="07:00:00")
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
 
     todos = relationship("Todo", back_populates="user", cascade="all, delete-orphan")
 
