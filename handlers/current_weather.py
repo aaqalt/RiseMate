@@ -1,10 +1,11 @@
 from aiogram import types, Router
+from aiogram.filters import Command
 from utils.database import SessionLocal, User
 from utils.get_weather import get_weather
 
 current_weather = Router()
 
-@current_weather.message(commands=["current_weather"])
+@current_weather.message(Command('current_weather'))
 async def current_weather_handler(message: types.Message):
     session = SessionLocal()
     try:
