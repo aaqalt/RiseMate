@@ -14,18 +14,17 @@ async def send_morning(bot, user):
     try:
         todos = session.query(Todo).filter(Todo.user_id == user.chat_id).all()
         todo_text = "\n".join(f"{i+1}. {t.text}" for i, t in enumerate(todos)) or "No tasks today!"
+        lat, lon = user.latitude, user.longitude
+        lat, lon,loc = user.latitude, user.longitude,user.location
 
-        if user.location:
-            weather = await get_weather(user.location)
-        else:
-            weather = "🌍 Location not set"
+        weather_text, location_name = await get_weather(lat, lon,loc)
 
         quote = await get_quote()
 
         message = (
             f"Good morning, {user.fullname}! ☀️\n"
             f"Here’s your morning update for <b>{datetime.now().date()}:</b>\n\n"
-            f"<b>🌤 Weather in {user.location or 'Unknown'}:</b> {weather}\n"
+            f"<b>🌤 Weather in {location_name or 'Unknown'}:</b> {weather_text}\n"
             f"<b>💪 Quote:</b> <i>{quote}</i>\n\n"
             f"<b>📝 Your To-Do List:</b>\n<i>{todo_text}</i>"
         )

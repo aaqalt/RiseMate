@@ -11,12 +11,9 @@ async def current_weather_handler(message: types.Message):
     try:
         user = session.query(User).filter(User.chat_id == message.chat.id).first()
 
-        if user and user.latitude is not None and user.longitude is not None:
-            lat, lon = user.latitude, user.longitude
-        else:
-            lat, lon = 41.2995, 69.2401
+        lat, lon,loc = user.latitude, user.longitude,user.location
 
-        weather_text, location_name = await get_weather(lat, lon)
+        weather_text, location_name = await get_weather(lat, lon,loc)
         
         if weather_text:
             await message.answer(

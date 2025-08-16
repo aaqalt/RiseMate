@@ -37,8 +37,8 @@ async def process_location_geo(message: Message, state: FSMContext):
     lat = message.location.latitude
     lon = message.location.longitude
     chat_id = message.from_user.id
-    loc,text = get_weather(lat,lon)
-    User.update(session, chat_id, latitude=lat, longitude=lon,location=text)
+    weather_text, location_name = await get_weather(lat, lon)
+    User.update(session, chat_id, latitude=lat, longitude=lon,location=location_name)
 
-    await message.answer(f"✅ Your location has been set to: {lat}, {lon}", reply_markup=ReplyKeyboardRemove())
+    await message.answer(f"✅ Your location has been set to: {location_name}", reply_markup=ReplyKeyboardRemove())
     await state.clear()
