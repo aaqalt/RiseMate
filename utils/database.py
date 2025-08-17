@@ -29,6 +29,7 @@ class User(Base):
     pr_time = Column(Time, default="07:00:00")
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
+    language = Column(String,default='en')
 
     todos = relationship("Todo", back_populates="user", cascade="all, delete-orphan")
 
