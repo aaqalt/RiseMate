@@ -1,14 +1,15 @@
 # utils/morning_update.py
 import asyncio
-from datetime import datetime, time
+from datetime import datetime
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from utils.get_quote import get_quote
 from utils.get_weather import get_weather
 from utils.database import SessionLocal, User, Todo
 
-scheduler = AsyncIOScheduler()
-TIMEZONE = pytz.timezone("Asia/Tashkent")  
+TIMEZONE = pytz.timezone("Asia/Tashkent")
+scheduler = AsyncIOScheduler(timezone=TIMEZONE)
+
 
 async def send_morning(bot, user):
     session = SessionLocal()
@@ -34,18 +35,28 @@ async def send_morning(bot, user):
     finally:
         session.close()
 
-async def check_and_send(bot):
+
+def schedule_user_jobs(bot):
     session = SessionLocal()
     try:
-        now = datetime.now(TIMEZONE)
         users = session.query(User).all()
         for user in users:
-            pr_time = user.pr_time or time(19, 0) 
-            if pr_time.hour == now.hour and pr_time.minute == now.minute:
-                asyncio.create_task(send_morning(bot, user))
+            pr_time = user.pr_time  
+            if not pr_time:
+                continue
+
+            scheduler.add_job(
+                lambda u=user: asyncio.create_task(send_morning(bot, u)),
+                trigger="cron",
+                hour=pr_time.hour,
+                minute=pr_time.minute,
+                id=f"morning_{user.chat_id}",
+                replace_existing=True,
+            )
     finally:
         session.close()
 
+
 def start_morning_scheduler(bot):
-    scheduler.add_job(lambda: asyncio.create_task(check_and_send(bot)), "cron", second=0, timezone=TIMEZONE)
+    schedule_user_jobs(bot)
     scheduler.start()
