@@ -20,6 +20,7 @@ async def send_morning(bot, user):
         lat, lon = user.latitude, user.longitude
         loc_name = user.location or "Tashkent"
 
+        # get_weather returns (weather_text, location_name)
         weather_text, location_name = await get_weather(lat=lat, lon=lon, location_name=loc_name)
         quote = await get_quote()
 
@@ -32,6 +33,9 @@ async def send_morning(bot, user):
         )
 
         await bot.send_message(chat_id=user.chat_id, text=message, parse_mode="HTML")
+        print(f"✅ Morning message sent to {user.chat_id}")
+    except Exception as e:
+        print(f"❌ Failed to send morning message to {user.chat_id}: {e}")
     finally:
         session.close()
 
@@ -41,22 +45,24 @@ def schedule_user_jobs(bot):
     try:
         users = session.query(User).all()
         for user in users:
-            pr_time = user.pr_time  
-            if not pr_time:
+            if not user.pr_time:
                 continue
 
             scheduler.add_job(
                 lambda u=user: asyncio.create_task(send_morning(bot, u)),
                 trigger="cron",
-                hour=pr_time.hour,
-                minute=pr_time.minute,
+                hour=user.pr_time.hour,
+                minute=user.pr_time.minute,
                 id=f"morning_{user.chat_id}",
                 replace_existing=True,
             )
+            print(f"⏰ Scheduled job for user {user.chat_id} at {user.pr_time}")
     finally:
         session.close()
 
 
 def start_morning_scheduler(bot):
     schedule_user_jobs(bot)
-    scheduler.start()
+    if not scheduler.running:
+        scheduler.start()
+        print("🚀 Morning scheduler started!")
