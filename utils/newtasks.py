@@ -18,7 +18,7 @@ async def clear_and_ask_tasks(send_message):
             try:
                 await send_message(
                     chat_id=user.chat_id,
-                    text="🌙 Hello! All of your previous tasks has been deleted.\n Do you have any plans for tomorrow? Use /addtodo to add them."
+                    text="🌙 Hello! All of your previous tasks have been deleted.\n Do you have any plans for tomorrow? Use /addtodo to add them."
                 )
             except Exception as e:
                 print(f"Failed to send message to {user.chat_id}: {e}")
